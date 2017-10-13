@@ -110,6 +110,22 @@ type ipfsAddResp struct {
 	Hash string
 }
 
+type ipfsPeers struct {
+	Peers ipfsPeer[]
+}
+
+type ipfsPeer struct {
+	Addr    string
+	Peer    string
+	Latency string
+	Muxer   string
+	Streams ipfsStream[]
+}
+
+type ipfsStream struct {
+	Protocol string
+}
+
 // NewConnector creates the component and leaves it ready to be started
 func NewConnector(ipfsNodeMAddr ma.Multiaddr, ipfsProxyMAddr ma.Multiaddr) (*Connector, error) {
 	_, nodeAddr, err := manet.DialArgs(ipfsNodeMAddr)
@@ -847,4 +863,31 @@ func (ipfs *Connector) RepoSize() (int, error) {
 		return 0, err
 	}
 	return stats.RepoSize, nil
+}
+
+
+// SwarmPeers returns the peers currently connected to this ipfs daemon
+func (ipfs *Connector) SwarmPeers() ([]peer.ID, error) {
+	res, err := ipfs.get("swarm/peers")
+	if err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	var peersRaw ipfsPeers
+	err = json.Unmarshal(res, &peersRaw)
+	if err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+
+	peers := make([]peer.ID)
+	for _, p := range peersRaw.Peers {
+		pID, err := peer.IDB58Decode(p.Peer)
+		if err != nil {
+			logger.Error(err)
+			return nil, err
+		}
+		peers.append(pID)
+	}
+	return peers
 }

@@ -888,6 +888,44 @@ func (c *Cluster) Peers() []api.ID {
 	return peers
 }
 
+// GetConnectGraph returns a description of which cluster peers and ipfs
+// daemons are connected to each other
+func (c *Cluster) GetConnectGraph() api.ConnectGraph {
+	ipfsLinks := make(map[Peer.ID][]Peer.ID)
+	clusterLinks := make(map[Peer.ID][]Peer.ID)
+	clusterToIpfs := make(map[Peer.ID]Peer.ID)
+	
+	// Determine own cluster ID and peers
+
+	members := c.peerManager.peers()
+	// Determine own ipfs ID and its peers
+	ipfsID, _ := c.ipfs.ID()
+	ipfsPeers, _ := c.ipfs.Peers()
+	
+	// Query cluster peers for their cluster and ipfs peers
+	for _, cp := members {
+		// Get their peer list, add it to cluster peers map
+		// Get their ipfs id, add it to the clusterToIpfs map
+		// Get their ipfs daemon's peers, add to the ipfs peers map
+
+		/// Perhaps this whole process should go on in a BFS way, until all members have been seen before
+		/// this way the whole connectivity graph (at least up to a conn component) will be found starting
+		/// from any peer
+	}
+
+
+	return api.ConnectGraph {
+		ClusterID: c.id,
+		IPFSLinks: ipfsLinks,
+		ClusterLinks: clusterLinks,
+		ClusterToIPFS: clusterToIpfs
+	}
+
+
+
+}
+
+
 // makeHost makes a libp2p-host
 func makeHost(ctx context.Context, cfg *Config) (host.Host, error) {
 	ps := peerstore.NewPeerstore()

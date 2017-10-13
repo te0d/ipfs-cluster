@@ -254,6 +254,51 @@ type IDSerial struct {
 	//PublicKey          []byte
 }
 
+// ConnectGraph holds information about the connectivity of the cluster
+type ConnectGraph struct {
+	ClusterID          peer.ID
+	IPFSLinks          map[peer.ID][]peer.ID // ipfs to ipfs links
+	ClusterLinks       map[peer.ID][]peer.ID // cluster to cluster links
+	ClustertoIPFS      map[peer.ID]peer.ID   // cluster to ipfs links
+}
+
+// ConnectGraphSerial is the serializable ConnectGraph counterpart for RPC requests
+type ConnectGraphSerial struct {
+	ClusterID          string
+	IPFSLinks          map[string][]string `json:"IPFSLinks"`
+	ClusterLinks       map[string][]string `json:"ClusterLinks"`
+	ClustertoIPFS      map[string]string   `json:"ClustertoIPFS"`
+}
+
+// ToSerial converts a ConnectGraph to its Go-serializable version
+func (ConnectGraph) ToSerial() ConnectGraphSerial {
+	IPFSLinksSerial := SerializeLinkMap(ConnectGraph.IPFSLinks)
+	ClusterLinksSerial := SerializeLinkMap(ConnectGraph.ClusterLinks)
+	ClustertoIPFSSerial := make(map[string]string)
+	for k,v := range ConnectGraph.ClustertoIPFS {
+		ClustertoIPFSSerial[peer.IDB58Encode(k)] := peer.IDB58Encode(v)
+	}
+	return ConnectGraphSerial{
+		ClusterID:     peer.IDB58Encode(ConnectGraph.ClusterID),
+		IPFSLinks:     IPFSLinksSerial,
+		ClusterLinks:  ClusterLinksSerial,
+		ClustertoIPFS: ClustertoIPFSSerial,
+	}
+}
+
+func SerializeLinkMap(Links map[peer.ID][]peer.ID) map[string][]string {
+	LinksSerial := make(map[string][]string)
+	for k,v := range Links  {
+		kS := peer.IDB58Encode(k)
+		IPFSLinksSerial[kS] = []
+		for _, id := range v {
+			IPFSLinksSerial[kS].append(peer.IDB58Encode(id))
+		}
+	}
+	return LinksSerial
+}
+
+
 // ToSerial converts an ID to its Go-serializable version
 func (id ID) ToSerial() IDSerial {
 	//var pkey []byte

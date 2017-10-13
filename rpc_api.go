@@ -89,6 +89,13 @@ func (rpcapi *RPCAPI) PeerAdd(in api.MultiaddrSerial, out *api.IDSerial) error {
 	return err
 }
 
+// Graph runs Cluster.GetConnectGraph().
+func (rpcapi *RPCAPI) Graph(in struct{}, out *api.ConnectGraph) error {
+	graph, err := rpcapi.c.GetConnectGraph()
+	*out = graph.ToSerial()
+	return err
+}
+
 // PeerRemove runs Cluster.PeerRm().
 func (rpcapi *RPCAPI) PeerRemove(in peer.ID, out *struct{}) error {
 	return rpcapi.c.PeerRemove(in)

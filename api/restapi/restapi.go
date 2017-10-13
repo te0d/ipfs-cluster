@@ -288,6 +288,17 @@ func (rest *RESTAPI) versionHandler(w http.ResponseWriter, r *http.Request) {
 	sendResponse(w, err, v)
 }
 
+func (rest *RESTAPI) peerGraphHandler(w http.ResponseWriter, r *http.Request) {
+	var g api.ConnectGraph
+	err := rest.rpcClient.Call("",
+		"Cluster",
+		"Graph",
+		struct{}{},
+		&g)
+	sendResponse(w, err, g)
+		
+}
+
 func (rest *RESTAPI) peerListHandler(w http.ResponseWriter, r *http.Request) {
 	var peersSerial []api.IDSerial
 	err := rest.rpcClient.Call("",
