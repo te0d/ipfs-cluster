@@ -182,6 +182,10 @@ func makeDataFolder(baseDir, folder string) (string, error) {
 	return folder, nil
 }
 
+func MakeServerConf(peers []peer.ID) hraft.Configuration {
+	return makeServerConf(peers)
+}
+
 // create Raft servers configuration
 func makeServerConf(peers []peer.ID) hraft.Configuration {
 	sm := make(map[string]struct{})

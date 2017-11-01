@@ -12,7 +12,12 @@ type mapStateV1 struct {
 	PinMap  map[string]struct{}
 }
 
+
+const currentV int = 1
+
+
 func (st *MapState) migrateFrom(version int, snap []byte) error {
+
 	switch version {
 	case 1:
 		var mstv1 mapStateV1
