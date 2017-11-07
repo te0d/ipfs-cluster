@@ -13,9 +13,6 @@ type mapStateV1 struct {
 }
 
 
-const currentV int = 1
-
-
 func (st *MapState) migrateFrom(version int, snap []byte) error {
 
 	switch version {

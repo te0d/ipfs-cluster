@@ -19,7 +19,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/urfave/cli"
 	libp2praft "github.com/libp2p/go-libp2p-raft"
-        host "github.com/libp2p/go-libp2p-host"
+	host "github.com/libp2p/go-libp2p-host"
 	basichost "github.com/libp2p/go-libp2p/p2p/host/basic"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
 	swarm "github.com/libp2p/go-libp2p-swarm"
