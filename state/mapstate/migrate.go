@@ -1,5 +1,4 @@
-
-1;95;0cpackage mapstate
+package mapstate
 
 import (
 	"encoding/json"
