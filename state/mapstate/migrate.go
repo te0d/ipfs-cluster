@@ -1,4 +1,5 @@
-package mapstate
+
+1;95;0cpackage mapstate
 
 import (
 	"encoding/json"
@@ -12,9 +13,7 @@ type mapStateV1 struct {
 	PinMap  map[string]struct{}
 }
 
-
 func (st *MapState) migrateFrom(version int, snap []byte) error {
-
 	switch version {
 	case 1:
 		var mstv1 mapStateV1

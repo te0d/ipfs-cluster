@@ -260,9 +260,9 @@ removal, migrate using this command, and restart every peer.
 					
 				}
 				//Load configs
-	                        cfg, clusterCfg, _, _, consensusCfg, _, _, _ := makeConfigs()
-	                        err := cfg.LoadJSONFromFile(configPath)
- 	                        checkErr("loading configuration", err)
+				cfg, clusterCfg, _, _, consensusCfg, _, _, _ := makeConfigs()
+				err := cfg.LoadJSONFromFile(configPath)
+				checkErr("loading configuration", err)
 				backupFilePath := c.Args().First()
 				var raftDataPath string
 				if c.NArg() == 1 {
@@ -415,13 +415,6 @@ func cleanupRaft(raftDataDir string) error {
 		return err
 	}
 	err = os.RemoveAll(snapShotDir)
-
-	// TODO we need to create the snapshot dir so that it can be writeable by the
-	// next ipfs-cluster-service process.  Ideally it's not globally writeable for
-	// security (escalation to putting any state in ipfs cluster raft logs) but
-	// this will need some thought.  What does hraft do so that future processes
-	// can edit the snapshot dir after shutting down a raft peer?
-	
 	return err
 }
 
@@ -541,11 +534,7 @@ func makeDummyHost(cfg *ipfscluster.Config) (host.Host, error) {
 		}
 		ps.AddAddr(pid, decapAddr, peerstore.PermanentAddrTTL)
 	}
-	pid, decapAddr, err := ipfscluster.MultiaddrSplit(cfg.ID)
-	if err != nil {
-		return nil, err
-	}
-	ps.AddAddr(pid, decapAddr, peerstore.PermanentAddrTTL)
+	ps.AddAddr(cfg.ID, cfg.ListenAddr, peerstore.PermanentAddrTTL)
 	
 	network, err := swarm.NewNetwork(
 		context.Background(),
